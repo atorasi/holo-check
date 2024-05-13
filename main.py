@@ -38,6 +38,7 @@ class Holograph:
         async with httpx.AsyncClient(headers=self.headers) as session:
             r = await session.get(f"https://eligibility.holograph.foundation/api/eligibility/{self.address}")
             
+        amount = 0
         if r.json()['status'] == True:
             amount = float(r.json()['amount'])
             
