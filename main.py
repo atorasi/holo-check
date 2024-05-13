@@ -35,16 +35,19 @@ class Holograph:
         self.index = index
         
     async def check_drop(self) -> float:
-        async with httpx.AsyncClient(headers=self.headers) as session:
-            r = await session.get(f"https://eligibility.holograph.foundation/api/eligibility/{self.address}")
-            
-        amount = 0
-        if r.json()['status'] == True:
-            amount = float(r.json()['amount'])
-            
-        print(f"{self.index}){self.address}: {amount}")
-        with open(RESULT_LIST, "a") as file:
-            file.write(f'{self.address}:{amount}\n')
+        try: 
+            async with httpx.AsyncClient(headers=self.headers) as session:
+                r = await session.get(f"https://eligibility.holograph.foundation/api/eligibility/{self.address}")
+                
+            amount = 0
+            if r.json()['status'] == True:
+                amount = float(r.json()['amount'])
+                
+            print(f"{self.index}){self.address}: {amount}")
+            with open(RESULT_LIST, "a") as file:
+                file.write(f'{self.address}:{amount}\n')
+        except Exception as err:
+            print(f"error: {err}")
 
 async def run_script(index: int, address: str) -> None:
     client = Holograph(index, address)
